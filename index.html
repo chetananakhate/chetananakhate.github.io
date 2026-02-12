@@ -1,31 +1,47 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Valentine's Proposal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Proposal</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f8e1f4; }
-        h1 { color: #e91e63; }
-        .pickup-line { margin: 20px; font-size: 20px; }
-        button { margin-top: 10px; padding: 10px 20px; border: none; background-color: #e91e63; color: white; font-size: 18px; cursor: pointer; }
-        button:hover { background-color: #c2185b; }
-        .meme { max-width: 80%; margin: 10px 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8e1e1;
+            text-align: center;
+            color: #fff;
+        }
+        h1 {
+            color: #ff69b4;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        p {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .meme {
+            width: 300px;
+            margin: 20px auto;
+        }
+        .chocolates {
+            margin: 20px auto;
+            width: 100px;
+        }
     </style>
 </head>
 <body>
-    <h1>Will You Be My Valentine?</h1>
-    <div class="pickup-line">
-        <p>Are you a magician? Because whenever I look at you, everyone else disappears!</p>
-        <img src="meme1.jpg" class="meme" alt="Funny Meme 1">
-        <button onclick="response('yes')">Yes</button>
-        <button onclick="response('no')">No</button>
-    </div>
-    <script>
-        function response(answer) {
-            if (answer === 'yes') {
-                alert('Yay! Let’s make it a date!');
-            } else {
-                alert('Are you a parking ticket? Because you’ve got FINE written all over you!');
-            }
-        }
-    </script>
+    <h1>Happy Valentine's Day!</h1>
+    <p>Roses are red,<br>
+    Violets are blue,<br>
+    I’m not great at poetry,<br>
+    But I’m great at loving you!</p>
+    <img src="https://example.com/meme1.jpg" alt="Cute meme" class="meme">
+    <p>Will you be my Valentine?</p>
+    <img src="https://example.com/chocolates.jpg" alt="Chocolates" class="chocolates">
+    <p>Life without you is like a broken pencil… pointless!</p>
+    <img src="https://example.com/meme2.jpg" alt="Funny meme" class="meme">
+    <footer>
+        <p>Let’s make memory together this Valentine's Day!</p>
+    </footer>
 </body>
 </html>
