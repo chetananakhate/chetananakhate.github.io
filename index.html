@@ -1,195 +1,276 @@
-<!doctype html>
+This is a fantastic idea. The Tangled lantern scene is peak romance.
+To achieve this, we need to combine a few things:
+ * The Background: A static image of the boat scene.
+ * The Foreground Layer: A transparent image of a single lantern, duplicated many times.
+ * CSS Animations: To make those duplicate lanterns float upwards at different speeds and sizes, creating depth and movement.
+ * The JavaScript Logic: For the "runaway no" button.
+Here is the complete code in one single HTML file, ready for GitHub Pages.
+Instructions for GitHub Pages:
+ * Create a new repository on GitHub (e.g., my-proposal).
+ * Create a file named index.html in that repository.
+ * Paste all the code below into that file.
+ * Go to repository Settings -> Pages.
+ * Under "Source", choose Deploy from a branch and select main (or master) and / (root). Click Save.
+ * In a few minutes, GitHub will give you a live link (e.g., yourusername.github.io/my-proposal).
+The Code (index.html)
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Will you be my Valentine, Mahima?</title>
-  <meta name="description" content="Minimal Valentine page for Mahima with floating lanterns, many hearts, orbiting NO and persuasive lines near YES." />
-  <style>
-    :root{ --bg1:#fff5f8; --bg2:#fff1f6; --accent:#ff2d95; --muted:#6b6b6b }
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:#222}
-    body{background:linear-gradient(180deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;overflow:hidden}
-    canvas#scene{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none}
-    .wrap{position:relative;z-index:6;width:min(780px,96%);max-width:780px;padding:28px;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:20px;background:rgba(255,255,255,0.85);box-shadow:0 12px 40px rgba(0,0,0,0.08);backdrop-filter:blur(6px)}
-    h1{margin:0;font-size:clamp(22px,4.6vw,38px);color:var(--accent);text-align:center}
-    .buttons{display:flex;gap:18px;align-items:center;justify-content:center;margin-top:6px;flex-wrap:wrap}
-    button{border:0;padding:12px 26px;border-radius:999px;font-weight:700;cursor:pointer}
-    #yes{background:linear-gradient(135deg,var(--accent),#ff7ab6);color:white;box-shadow:0 10px 30px rgba(255,45,149,0.14);z-index:8}
-    #no{background:#fff;color:#333;border:1px solid rgba(0,0,0,0.06);box-shadow:0 8px 20px rgba(0,0,0,0.06);z-index:8;touch-action:manipulation}
-    .bubble{position:relative;min-height:42px;min-width:220px;max-width:360px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,0.98);box-shadow:0 8px 20px rgba(0,0,0,0.06);font-weight:600;text-align:center;opacity:0;transform:translateY(6px);transition:opacity .22s,transform .22s;z-index:7}
-    .bubble.show{opacity:1;transform:translateY(0)}
-    .credit{font-size:0.88rem;color:var(--muted)}
-    .no-wrap{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:6}
-    @media(max-width:720px){.wrap{padding:20px}.buttons{flex-direction:row;gap:12px}.bubble{min-width:160px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Question for You...</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --glow-color: #ffd700; /* Golden glow */
+            --button-pink: #ff7e95;
+            --text-cream: #fffdd0;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Prevents scrolling */
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0a0a2a; /* Deep night blue fallback */
+        }
+
+        /* --- The Background Scene --- */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Using a high-quality Tangled scene wallpaper */
+            background: url('https://images7.alphacoders.com/300/300878.jpg') no-repeat center center fixed; 
+            background-size: cover;
+            filter: brightness(0.8); /* Slightly darken background so lanterns pop */
+            z-index: -2;
+        }
+
+        /* --- The Floating Lanterns Container --- */
+        .lanterns-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allows clicking through lanterns to buttons */
+            z-index: -1;
+        }
+
+        /* Individual Lantern Style */
+        .lantern {
+            position: absolute;
+            bottom: -150px; /* Start below screen */
+            /* Using a transparent PNG of a lantern */
+            background-image: url('https://i.imgur.com/8yY5x0z.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.9;
+            /* A warm golden glow shadow around the lanterns */
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+            animation: floatUp linear infinite, wobble ease-in-out infinite alternate;
+        }
+
+        /* Animation Keyframes */
+        @keyframes floatUp {
+            0% { bottom: -150px; opacity: 0; }
+            10% { opacity: 0.8; }
+            100% { bottom: 110vh; opacity: 0.5; } /* Float past top of screen */
+        }
+
+        @keyframes wobble {
+            0% { transform: translateX(-5px) rotate(-2deg); }
+            100% { transform: translateX(5px) rotate(2deg); }
+        }
+
+        /* --- Manually creating variation for 15 lanterns --- 
+           Varying sizes, speeds, delays, and start positions for pseudo-3D effect */
+        .l1 { left: 10%; width: 50px; height: 70px; animation-duration: 15s, 4s; animation-delay: 0s; }
+        .l2 { left: 25%; width: 80px; height: 110px; animation-duration: 20s, 5s; animation-delay: 2s; filter: blur(1px) drop-shadow(0 0 20px var(--glow-color)); z-index: 2;} /* Bigger, closer */
+        .l3 { left: 40%; width: 40px; height: 60px; animation-duration: 18s, 3s; animation-delay: 5s; opacity: 0.6; }
+        .l4 { left: 55%; width: 60px; height: 85px; animation-duration: 22s, 6s; animation-delay: 1s; }
+        .l5 { left: 70%; width: 90px; height: 120px; animation-duration: 25s, 7s; animation-delay: 3s; z-index: 3;}
+        .l6 { left: 85%; width: 45px; height: 65px; animation-duration: 16s, 4s; animation-delay: 6s; }
+        .l7 { left: 5%;  width: 55px; height: 75px; animation-duration: 19s, 5s; animation-delay: 8s; }
+        .l8 { left: 30%; width: 30px; height: 45px; animation-duration: 28s, 3s; animation-delay: 4s; filter: blur(2px);} /* Distant */
+        .l9 { left: 50%; width: 70px; height: 100px; animation-duration: 21s, 6s; animation-delay: 9s; }
+        .l10{ left: 75%; width: 40px; height: 60px; animation-duration: 17s, 4s; animation-delay: 11s;}
+        .l11{ left: 15%; width: 65px; height: 90px; animation-duration: 23s, 5s; animation-delay: 1s; }
+        .l12{ left: 90%; width: 35px; height: 50px; animation-duration: 26s, 3s; animation-delay: 7s; }
+
+
+        /* --- Main Content UI --- */
+        .content-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            z-index: 10; /* Ensure text is above lanterns */
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--text-cream);
+            font-size: 4rem;
+            margin-bottom: 40px;
+            /* The glowing text effect from the image */
+            text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color), 0 0 40px #ff7e95;
+        }
+
+        .btn-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+
+        button {
+            font-family: 'Montserrat', sans-serif;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #yesBtn {
+            padding: 20px 60px;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, #ff7e95, #ffba85);
+            border-radius: 50px;
+            /* The big pink glow from the image */
+            box-shadow: 0 0 20px rgba(255, 126, 149, 0.7), 0 0 40px rgba(255, 126, 149, 0.4);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 126, 149, 1), 0 0 60px rgba(255, 126, 149, 0.6);
+        }
+
+        #noBtn {
+            padding: 10px 30px;
+            font-size: 1.2rem;
+            color: var(--button-pink);
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid var(--button-pink);
+            border-radius: 30px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            position: absolute; /* Crucial for moving it around */
+            bottom: 20px; /* Initial position */
+        }
+
+        /* --- Success State --- */
+        #success-message {
+            display: none; /* Hidden by default */
+            text-align: center;
+            color: var(--text-cream);
+            animation: fadeIn 1s ease-in;
+        }
+
+        #success-message h2 {
+             font-family: 'Dancing Script', cursive;
+             font-size: 3.5rem;
+             text-shadow: 0 0 10px var(--glow-color);
+             margin-bottom: 10px;
+        }
+        
+        #success-message p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.5;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.8rem; }
+            #yesBtn { padding: 15px 40px; font-size: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
-  <canvas id="scene" aria-hidden="true"></canvas>
 
-  <main class="wrap" role="main" aria-labelledby="q">
-    <h1 id="q">Mahima — will you be my Valentine?</h1>
+    <div class="background"></div>
 
-    <div class="buttons" role="group" aria-label="Answer controls">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-        <button id="yes" aria-label="Yes">YES 💕</button>
-        <div id="bubble" class="bubble" aria-live="polite" aria-atomic="true"></div>
-      </div>
+    <div class="lanterns-container">
+        <div class="lantern l1"></div>
+        <div class="lantern l2"></div>
+        <div class="lantern l3"></div>
+        <div class="lantern l4"></div>
+        <div class="lantern l5"></div>
+        <div class="lantern l6"></div>
+        <div class="lantern l7"></div>
+        <div class="lantern l8"></div>
+        <div class="lantern l9"></div>
+        <div class="lantern l10"></div>
+        <div class="lantern l11"></div>
+        <div class="lantern l12"></div>
+        <div class="lantern l1"></div>
+        <div class="lantern l3"></div>
+        <div class="lantern l8"></div>
     </div>
 
-    <div class="credit">(Move or touch the screen — lanterns float up slowly.)</div>
-  </main>
+    <div class="content-container">
+        <div id="initial-question">
+            <h1>Will you be my date?</h1>
+            <div class="btn-container">
+                <button id="yesBtn" onclick="sheSaidYes()">YES!</button>
+                <button id="noBtn" onmouseover="dodgeButton()" ontouchstart="dodgeButton()">No</button>
+            </div>
+        </div>
 
-  <div class="no-wrap" id="noWrap"><button id="no" aria-label="No">No</button></div>
+        <div id="success-message">
+            <h2>Yay! It's a date! &#128525;</h2>
+            <p>I'm so excited! I'll message you the details soon. Get ready for a magical time! &#10024;</p>
+        </div>
+    </div>
 
-  <script>
-    /* Lantern-style floating objects inspired by Tangled:
-       - Many lanterns rise slowly (gentle 3D feel via depth)
-       - Lanterns glow, drift up, rotate slightly
-       - Pointer/touch gives mild directional influence (push)
-       - NO button orbits around YES when approached; persuasive lines appear only in bubble near YES
-    */
+    <script>
+        // The runaway button logic
+        function dodgeButton() {
+            const noBtn = document.getElementById('noBtn');
+            
+            // Get window dimensions (minus button size so it doesn't go offscreen)
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
-    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+            // Generate random positions
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
 
-    const cfg = {
-      hearts: isTouch ? 40 : 100,
-      lanterns: isTouch ? 60 : 220,        // higher count for many lanterns
-      lanternSize: [10, 30],               // visual size range
-      lanternDepth: [0.7, 1.8],            // depth for 3D feel
-      lanternRiseBase: 0.02,               // slow upward base speed
-      lanternInfluenceRadius: 160,
-      lanternPointerInfluence: 0.04,       // mild push from pointer
-      orbitRadius: 90,
-      orbitDuration: 2800,
-      persuasiveShowMs: 2600
-    };
+            // Apply new positions based on fixed positioning relative to the viewport
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
 
-    // persuasive lines (only shown near YES)
-    const persuasive = [
-      "I'll bring silly smiles and cozy hugs 💫",
-      "I'll share fries, hoodies, and laughs — always 🍟🧥",
-      "I'll make playlists for our little moments 🎶",
-      "I'll remember the tiny things that make you smile ✨",
-      "Say yes and I'll be your happiest hello every day 😊",
-      "I'll be your +1 for everything (snacks included) 🎉",
-      "One 'yes' and I'll be the luckiest person alive 💖"
-    ];
-
-    // canvas setup
-    const canvas = document.getElementById('scene');
-    const ctx = canvas.getContext('2d', { alpha: true });
-    let DPR = Math.max(1, window.devicePixelRatio || 1);
-    function resize() {
-      DPR = Math.max(1, window.devicePixelRatio || 1);
-      canvas.width = Math.floor(innerWidth * DPR);
-      canvas.height = Math.floor(innerHeight * DPR);
-      canvas.style.width = innerWidth + 'px';
-      canvas.style.height = innerHeight + 'px';
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    const hearts = [], lanterns = [];
-
-    function rand(min, max){ return min + Math.random() * (max - min); }
-
-    // spawn decorative hearts
-    function spawnHeart(x=null,y=null){
-      hearts.push({
-        x: x===null ? Math.random()*innerWidth : x,
-        y: y===null ? innerHeight + rand(10, 80) : y,
-        vx: rand(-0.2, 0.2),
-        vy: -rand(0.01, 0.1),
-        size: rand(8,28),
-        hue: rand(320,360),
-        alpha: rand(0.45,0.95),
-        rot: rand(-0.6,0.6)
-      });
-    }
-
-    // spawn lantern (rising, glowing)
-    function spawnLantern(x=null,y=null){
-      const depth = rand(cfg.lanternDepth[0], cfg.lanternDepth[1]);
-      const size = rand(cfg.lanternSize[0], cfg.lanternSize[1]) * depth;
-      lanterns.push({
-        x: x===null ? Math.random()*innerWidth : x,
-        y: y===null ? innerHeight + rand(10, innerHeight*0.5) : y,
-        vx: rand(-0.08, 0.08) * (1/depth),
-        vy: - (cfg.lanternRiseBase * (1/depth) + rand(0,0.02)),
-        size,
-        depth,
-        rot: rand(0, Math.PI*2),
-        rSpeed: rand(-0.002, 0.002),
-        hue: rand(30, 45),   // warm lantern hues
-        alpha: rand(0.65, 0.96)
-      });
-    }
-
-    function populate(){
-      hearts.length = 0; lanterns.length = 0;
-      const hCount = isTouch ? cfg.hearts/2 : cfg.hearts;
-      const lCount = isTouch ? cfg.lanterns/3 : cfg.lanterns;
-      for(let i=0;i<hCount;i++) spawnHeart();
-      for(let i=0;i<lCount;i++) spawnLantern();
-    }
-    populate();
-
-    // pointer tracking (velocity-based)
-    const pointer = { x: innerWidth/2, y: innerHeight/2, lastX: null, lastY: null, vx:0, vy:0, t: performance.now() };
-    function updatePointer(x,y,t){
-      if(pointer.lastX === null){ pointer.lastX = x; pointer.lastY = y; pointer.t = t; pointer.x = x; pointer.y = y; return; }
-      const dt = Math.max(12, t - pointer.t);
-      pointer.vx = (x - pointer.lastX) / dt * 16;
-      pointer.vy = (y - pointer.lastY) / dt * 16;
-      pointer.lastX = x; pointer.lastY = y; pointer.t = t;
-      pointer.x = x; pointer.y = y;
-    }
-
-    // draw helpers
-    function drawHeart(h){ ctx.save(); ctx.translate(h.x, h.y); ctx.rotate(h.rot); const s = h.size * 0.9; ctx.beginPath(); ctx.moveTo(0, -s/2); ctx.bezierCurveTo(s/2, -s/2 - s/3, s*1.2, -s/6, 0, s*0.9); ctx.bezierCurveTo(-s*1.2, -s/6, -s/2, -s/2 - s/3, 0, -s/2); ctx.closePath(); ctx.fillStyle = `hsla(${h.hue},85%,60%,${h.alpha})`; ctx.fill(); ctx.restore(); }
-
-    // draw lantern (simple stylized lantern: ellipse + glow)
-    function drawLantern(l){ ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.rot); const w = l.size * 0.7; const h = l.size * 1.05; const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(w, h) * 2); glow.addColorStop(0, `rgba(255,220,150,${0.5 * l.alpha})`); glow.addColorStop(0.4, `rgba(255,200,120,${0.12 * l.alpha})`); glow.addColorStop(1, `rgba(255,200,120,0)`); ctx.fillStyle = glow; ctx.beginPath(); ctx.ellipse(0, 0, w*1.8, h*1.8, 0, 0, Math.PI*2); ctx.fill(); const g = ctx.createLinearGradient(0, -h*0.6, 0, h*0.6); g.addColorStop(0, `hsl(${l.hue + 8},90%,65%)`); g.addColorStop(0.6, `hsl(${l.hue},80%,52%)`); g.addColorStop(1, `hsl(${l.hue - 8},85%,45%)`); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, w, h, 0, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.fillStyle = `rgba(255,240,200,${0.98 * l.alpha})`; ctx.ellipse(0, h*0.06, w*0.28, h*0.28, 0, 0, Math.PI*2); ctx.fill(); ctx.restore(); }
-
-    // animation loop
-    let last = performance.now(); function animate(now){ const dt = Math.min(40, now - last); last = now; ctx.clearRect(0,0,innerWidth,innerHeight); if(Math.random() < 0.06) spawnLantern(); if(lanterns.length < (isTouch ? cfg.lanterns/3 : cfg.lanterns) && Math.random() < 0.12) spawnLantern(); for(let i = lanterns.length - 1; i >= 0; i--){ const p = lanterns[i]; p.vy -= 0.00002 * dt * (1 / p.depth); p.vx *= 0.9996; p.vy *= 0.9996; const dx = p.x - pointer.x, dy = p.y - pointer.y; const dist = Math.hypot(dx, dy); if(dist < cfg.lanternInfluenceRadius){ const f = (1 - (dist / cfg.lanternInfluenceRadius)); p.vx += (pointer.vx * cfg.lanternPointerInfluence) * f * (1 / p.depth); p.vy += (pointer.vy * cfg.lanternPointerInfluence) * f * (1 / p.depth); } p.x += p.vx * dt * 0.6; p.y += p.vy * dt * 0.6; p.rot += p.rSpeed * (1 + (1 / p.depth)); if(p.y < -120 || p.x < -200 || p.x > innerWidth + 200){ if(Math.random() < 0.7) spawnLantern(null, innerHeight + rand(20, 120)); lanterns.splice(i, 1); } else { drawLantern(p); } } for(let i = hearts.length - 1; i >= 0; i--){ const h = hearts[i]; h.vy -= 0.00002 * dt; h.vx *= 0.9997; h.vy *= 0.9996; const dx = h.x - pointer.x, dy = h.y - pointer.y, d = Math.hypot(dx, dy); if(d < cfg.lanternInfluenceRadius*0.7){ const f = (1 - (d / (cfg.lanternInfluenceRadius*0.7))); h.vx += (pointer.vx * 0.006) * f; h.vy += (pointer.vy * 0.006) * f; } h.x += h.vx * dt * 0.8; h.y += h.vy * dt * 0.8; h.rot += 0.001 * (Math.random()>0.5?1:-1) * dt; if(h.y < -120 || h.x < -160 || h.x > innerWidth + 160){ if(Math.random() < 0.6) spawnHeart(); hearts.splice(i,1); } else drawHeart(h); } requestAnimationFrame(animate); } requestAnimationFrame(animate);
-
-    // pointer handlers
-    window.addEventListener('mousemove', e => { updatePointer(e.clientX, e.clientY, performance.now()); checkProximity(e.clientX, e.clientY); }, { passive:true });
-    window.addEventListener('touchstart', e => { const t = e.touches[0]; if(!t) return; updatePointer(t.clientX, t.clientY, performance.now()); checkProximity(t.clientX, t.clientY); }, { passive:true });
-    window.addEventListener('touchmove', e => { const t = e.touches[0]; if(!t) return; updatePointer(t.clientX, t.clientY, performance.now()); checkProximity(t.clientX, t.clientY); }, { passive:true });
-
-    // initial seeding
-    updatePointer(innerWidth/2, innerHeight/2, performance.now());
-    for(let i=0;i<cfg.hearts;i++) spawnHeart();
-    for(let i=0;i<cfg.lanterns;i++) spawnLantern();
-
-    // --- NO orbiting and persuasive bubble (near YES) ---
-    const noWrap = document.getElementById('noWrap'), noBtn = document.getElementById('no'), yesBtn = document.getElementById('yes'), bubble = document.getElementById('bubble');
-
-    function yesCenter(){ const r = yesBtn.getBoundingClientRect(); return { x: r.left + r.width/2, y: r.top + r.height/2 }; }
-
-    let orbiting = false, orbitStart = 0, orbitAngle = 0, orbitReq = null;
-    function startOrbit(duration = cfg.orbitDuration){ if(orbiting) return; orbiting = true; orbitStart = performance.now(); orbitAngle = Math.random() * Math.PI*2; const center = yesCenter(); const radius = cfg.orbitRadius; function step(t){ const elapsed = t - orbitStart; const progress = Math.min(1, elapsed / duration); orbitAngle += 0.06 + 0.03 * (1 - progress); const cx = center.x + Math.cos(orbitAngle) * radius - (noWrap.offsetWidth/2); const cy = center.y + Math.sin(orbitAngle) * radius; noWrap.style.position = 'fixed'; noWrap.style.left = Math.min(Math.max(6, cx), innerWidth - noWrap.offsetWidth - 6) + 'px'; noWrap.style.bottom = Math.max(8, innerHeight - cy - noWrap.offsetHeight/2) + 'px'; if(progress < 1 && orbiting) orbitReq = requestAnimationFrame(step); else stopOrbit(); } orbitReq = requestAnimationFrame(step); }
-    function stopOrbit(){ orbiting = false; if(orbitReq) cancelAnimationFrame(orbitReq); orbitReq = null; noWrap.style.position = 'fixed'; noWrap.style.left = Math.max(12, (innerWidth/2 - noWrap.offsetWidth/2)) + 'px'; noWrap.style.bottom = '18px'; }
-
-    let pIndex = 0, pTimer = null;
-    function showPersuasive(){ bubble.classList.add('show'); bubble.textContent = persuasive[pIndex % persuasive.length]; pIndex++; if(pTimer) clearTimeout(pTimer); pTimer = setTimeout(()=> bubble.classList.remove('show'), cfg.persuasiveShowMs); }
-
-    function checkProximity(px, py){ const nb = noWrap.getBoundingClientRect(); const nx = nb.left + nb.width/2, ny = nb.top + nb.height/2; const d = Math.hypot(px - nx, py - ny); if(d < 120){ startOrbit(); showPersuasive(); } }
-
-    noBtn.addEventListener('click', e => { e.preventDefault(); startOrbit(); showPersuasive(); });
-    noBtn.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); startOrbit(); showPersuasive(); } });
-
-    yesBtn.addEventListener('click', () => { bubble.classList.add('show'); bubble.textContent = "Yes! Can't wait 💖"; burstConfettiAtYes(); if(pTimer) clearTimeout(pTimer); setTimeout(()=> bubble.classList.remove('show'), 3800); });
-    yesBtn.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); yesBtn.click(); } });
-
-    function burstConfettiAtYes(){ const c = yesCenter(); const colors = ['#ff2d95','#ff7ab6','#ffd1e6','#ffc3a0','#fff2f8']; for(let i=0;i<36;i++){ const el = document.createElement('div'); const s = 6 + Math.random()*10; el.style.position = 'fixed'; el.style.left = (c.x + (Math.random()*24 - 12)) + 'px'; el.style.top = (c.y + (Math.random()*12 - 6)) + 'px'; el.style.width = s + 'px'; el.style.height = s + 'px'; el.style.background = colors[Math.floor(Math.random()*colors.length)]; el.style.borderRadius = Math.random() > 0.6 ? '50%' : '2px'; el.style.zIndex = 9999; el.style.pointerEvents = 'none'; document.body.appendChild(el); const dx = (Math.random()*400 - 200); const dy = (innerHeight + 200) * (0.4 + Math.random()*0.8); const rot = Math.random()*720; const dur = 600 + Math.random()*800; el.animate([{ transform: 'translate(0,0) rotate(0deg)', opacity: 1 }, { transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`, opacity: 0 }], { duration: dur, easing: 'cubic-bezier(.2,.8,.3,1)'}); setTimeout(()=> el.remove(), dur + 40); } }
-
-    function initNo(){ noWrap.style.position='fixed'; noWrap.style.left = Math.max(12,(innerWidth/2 - noWrap.offsetWidth/2)) + 'px'; noWrap.style.bottom='18px'; }
-    initNo(); window.addEventListener('resize', initNo);
-
-  </script>
+        // The success state logic
+        function sheSaidYes() {
+            document.getElementById('initial-question').style.display = 'none';
+            document.getElementById('success-message').style.display = 'block';
+            
+            // Optional: Launch confetti or more intense lantern release here if desired
+        }
+    </script>
 </body>
 </html>
+
