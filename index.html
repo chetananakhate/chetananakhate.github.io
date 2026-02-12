@@ -1,47 +1,606 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valentine's Day Proposal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8e1e1;
-            text-align: center;
-            color: #fff;
-        }
-        h1 {
-            color: #ff69b4;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        p {
-            font-size: 1.2em;
-            margin: 20px 0;
-        }
-        .meme {
-            width: 300px;
-            margin: 20px auto;
-        }
-        .chocolates {
-            margin: 20px auto;
-            width: 100px;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Will You Be My Valentine? 💘</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <meta name="description" content="A cute and playful Valentine's Day proposal page." />
+
+  <style>
+    :root{
+      --bg1: #ffafbd;
+      --bg2: #ffc3a0;
+      --accent1: #ff2d95;
+      --accent2: #ff7ab6;
+      --card-bg: rgba(255,255,255,0.98);
+      --muted: #6b6b6b;
+      --glass: rgba(255,255,255,0.6);
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      background-size: 400% 400%;
+      animation: bgShift 12s ease infinite;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow:hidden;
+    }
+
+    @keyframes bgShift {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+
+    /* floating hearts canvas occupies full screen positioned behind content */
+    #hearts {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Main card */
+    .card {
+      position: relative;
+      z-index: 2;
+      width: min(920px, 94%);
+      max-width: 920px;
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap: 28px;
+      align-items:center;
+      padding: 28px;
+      background: linear-gradient(180deg, var(--card-bg), rgba(255,255,255,0.95));
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+      border: 1px solid rgba(255,255,255,0.6);
+      backdrop-filter: blur(6px) saturate(120%);
+    }
+
+    /* Left: message */
+    .left {
+      padding: 18px 10px;
+    }
+
+    .logo {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .logo .sig{
+      font-family: "Great Vibes", cursive;
+      font-size: 28px;
+      color: var(--accent1);
+    }
+    h1 {
+      margin:0 0 6px 0;
+      font-size: clamp(28px, 4vw, 44px);
+      color: var(--accent1);
+      line-height:1.02;
+      letter-spacing: -0.02em;
+    }
+    p.lead {
+      margin:8px 0 18px 0;
+      color: #333;
+      font-size: 1.05rem;
+    }
+
+    .cheesy {
+      background: linear-gradient(90deg, rgba(255,235,240,0.9), rgba(255,245,240,0.9));
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--accent2);
+      font-weight:600;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+      margin-bottom:12px;
+      min-height:46px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-style: italic;
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Right: interactive area */
+    .right {
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 14px;
+    }
+
+    .card-face {
+      width:100%;
+      text-align:center;
+    }
+
+    .buttons {
+      display:flex;
+      gap:14px;
+      margin-top:6px;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    button {
+      cursor:pointer;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-weight:700;
+      font-size: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .yes {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      color: white;
+      min-width: 150px;
+    }
+    .yes:active{ transform: scale(.98) rotate(-1deg)}
+    .yes:focus{ outline:3px solid rgba(255,45,149,0.18); outline-offset:4px }
+
+    .no {
+      background: #fff;
+      color: #444;
+      min-width: 140px;
+      border: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+    }
+    .no:focus{ outline:3px solid rgba(0,0,0,0.06); outline-offset:4px }
+
+    /* meme / convince box */
+    .meme-box {
+      width:100%;
+      margin-top: 8px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      min-height:88px;
+    }
+
+    .meme-card {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.92));
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      width:100%;
+      max-width:420px;
+    }
+
+    .meme-emoji {
+      font-size: 46px;
+      width:62px;
+      height:62px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:10px;
+      background: linear-gradient(180deg, #fff, #fff);
+      box-shadow: inset 0 1px 0 rgba(0,0,0,0.03);
+    }
+
+    .meme-text {
+      font-weight:600;
+      color:#333;
+      text-align:left;
+      font-size: .98rem;
+    }
+
+    .attempts {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top:6px;
+    }
+
+    /* success modal / celebration overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient( rgba(0,0,0,0.25), rgba(0,0,0,0.4) );
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .25s ease, visibility .25s;
+    }
+    .overlay.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    .celebrate {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      text-align:center;
+      max-width: 680px;
+      width: calc(100% - 40px);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.25);
+      transform: translateY(6px);
+    }
+    .celebrate h2{ margin:0; color: var(--accent1); font-size: clamp(26px, 4vw, 36px) }
+    .celebrate p { color:#444; margin-top:8px; font-size: 1.05rem }
+    .close-btn{
+      margin-top:18px;
+      background: linear-gradient(135deg,#ffd6ec,#ffb6db);
+      border-radius:999px;
+      padding:10px 18px;
+      font-weight:700;
+      border:none;
+      cursor:pointer;
+    }
+
+    /* small screens */
+    @media (max-width:840px){
+      .card{ grid-template-columns: 1fr; padding:20px; gap:16px }
+      .right{ order:-1 }
+      .meme-card{ max-width: 100% }
+    }
+
+    /* tiny playful micro-interactions */
+    .yes:hover{ transform: translateY(-6px) scale(1.03) }
+    .no:hover{ transform: translateY(-4px) }
+
+  </style>
 </head>
 <body>
-    <h1>Happy Valentine's Day!</h1>
-    <p>Roses are red,<br>
-    Violets are blue,<br>
-    I’m not great at poetry,<br>
-    But I’m great at loving you!</p>
-    <img src="https://example.com/meme1.jpg" alt="Cute meme" class="meme">
-    <p>Will you be my Valentine?</p>
-    <img src="https://example.com/chocolates.jpg" alt="Chocolates" class="chocolates">
-    <p>Life without you is like a broken pencil… pointless!</p>
-    <img src="https://example.com/meme2.jpg" alt="Funny meme" class="meme">
-    <footer>
-        <p>Let’s make memory together this Valentine's Day!</p>
-    </footer>
+  <canvas id="hearts" aria-hidden="true"></canvas>
+
+  <main class="card" role="main" aria-labelledby="pageTitle">
+    <section class="left" aria-labelledby="pageTitle">
+      <div class="logo">
+        <div class="sig">For You</div>
+        <div style="font-size:.9rem; color:var(--muted)">— a tiny surprise</div>
+      </div>
+
+      <h1 id="pageTitle">Will you be my Valentine?</h1>
+      <p class="lead">I made this just for you. Click the buttons — but beware, the "No" button can be tricky.</p>
+
+      <div id="cheesy" class="cheesy" aria-live="polite">"Are you a magician? Because whenever I look at you, everyone else disappears." ✨</div>
+
+      <p class="subtext">Short and sweet: I like you a lot. If your answer is yes, there will be confetti, silly smiles, and a very happy me.</p>
+    </section>
+
+    <aside class="right" aria-label="Answer controls">
+      <div class="card-face">
+        <div style="font-size:72px; margin-bottom:6px; line-height:1">💘</div>
+        <div style="font-weight:700; color:#111; font-size:1.05rem">So...?</div>
+
+        <div class="buttons" role="group" aria-label="Answer options">
+          <button class="yes" id="yesBtn" aria-label="Yes, I will be your valentine">YES! 😍</button>
+          <button class="no" id="noBtn" aria-label="No, I will not be your valentine">No</button>
+        </div>
+
+        <div class="meme-box" aria-live="polite">
+          <div class="meme-card" id="memeCard">
+            <div class="meme-emoji" id="memeEmoji">🥺</div>
+            <div class="meme-text" id="memeText">Please? I'll bring chocolates and extra smiles.</div>
+          </div>
+
+          <div class="attempts" id="attemptsText" aria-hidden="true">Attempts: 0 — we'll get to YES 😊</div>
+        </div>
+
+      </div>
+    </aside>
+  </main>
+
+  <!-- celebration overlay -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="celebrate" role="document">
+      <h2>YES!!! 🎉</h2>
+      <p>You're amazing — I'm so excited. Can't wait to make plans for Valentine's Day with you. 💕</p>
+      <button class="close-btn" id="closeCelebrate">Close</button>
+    </div>
+  </div>
+
+  <script>
+    /*
+      Features implemented:
+      - floating hearts canvas background
+      - evasive "No" button (moves on hover & on click)
+      - rotating cheesy lines + meme-like emoji+text
+      - attempt counter
+      - "Yes" button reveals celebration overlay & confetti
+      - keyboard accessible (Enter/Space on focused buttons)
+    */
+
+    // -----------------------
+    // Cheesy lines & memes
+    // -----------------------
+    const cheesy = [
+      "Are you a magician? Because whenever I look at you, everyone else disappears.",
+      "Do you believe in love at first sight, or should I walk by again?",
+      "Are you French? Because Eiffel for you.",
+      "Is your name Wi-Fi? Because I'm definitely feeling a connection.",
+      "If you were a vegetable you'd be a cute-cumber.",
+      "I must be a snowflake — I've fallen for you.",
+      "Do you have a map? I keep getting lost in your eyes.",
+      "You must be tired because you've been running through my daydreams.",
+      "Are you made of copper and tellurium? Because you're Cu-Te.",
+      "If kisses were snowflakes I'd send you a blizzard."
+    ];
+
+    const memes = [
+      {emoji: "🥺", text: "Please? I'll bring chocolate and terrible dad jokes."},
+      {emoji: "😭", text: "Me if you say no: dramatic slow fade."},
+      {emoji: "🤖", text: "Error 404: 'No' not recognized. Please try 'Yes'."},
+      {emoji: "🐶", text: "Even the dog agrees — you should say yes."},
+      {emoji: "🍫", text: "Your reward: unlimited chocolate if you say yes."},
+      {emoji: "🌙", text: "I'll steal you a star for Valentine's Day."},
+      {emoji: "🎯", text: "Bullseye: the right answer is 'Yes'."},
+      {emoji: "🚀", text: "This is your boarding call to Team Yes — don't miss it!"},
+      {emoji: "😅", text: "Awkward silence incoming if you say no..."},
+      {emoji: "🧁", text: "Cupcakes twice a week for a whole month if you say yes."}
+    ];
+
+    const cheesyEl = document.getElementById('cheesy');
+    const memeEmojiEl = document.getElementById('memeEmoji');
+    const memeTextEl = document.getElementById('memeText');
+    const attemptsText = document.getElementById('attemptsText');
+
+    let attempts = 0;
+    let memeIndex = 0;
+
+    function showNextMeme(){
+      const m = memes[memeIndex % memes.length];
+      memeEmojiEl.textContent = m.emoji;
+      memeTextEl.textContent = m.text;
+      memeIndex++;
+    }
+
+    function randomCheesyLine(){
+      const s = cheesy[Math.floor(Math.random()*cheesy.length)];
+      cheesyEl.textContent = s;
+    }
+
+    // -----------------------
+    // No button evasive logic
+    // -----------------------
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+
+    // Keep track of viewport for bounds
+    function randomPositionNear(x, y, radius=220){
+      const angle = Math.random()*Math.PI*2;
+      const r = 70 + Math.random()*(radius-70);
+      return {left: Math.round(x + Math.cos(angle)*r), top: Math.round(y + Math.sin(angle)*r)};
+    }
+
+    function moveNoButtonTo(left, top){
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = Math.max(8, Math.min(window.innerWidth - noBtn.offsetWidth - 8, left)) + 'px';
+      noBtn.style.top = Math.max(8, Math.min(window.innerHeight - noBtn.offsetHeight - 8, top)) + 'px';
+    }
+
+    // On hover, move away subtly
+    noBtn.addEventListener('mouseenter', (e)=>{
+      attempts++;
+      randomCheesyLine();
+      showNextMeme();
+      attemptsText.style.display = 'block';
+      attemptsText.textContent = `Attempts: ${attempts} — still working on that YES! 💪`;
+      // move to random nearby position
+      const mx = e.clientX || (window.innerWidth/2);
+      const my = e.clientY || (window.innerHeight/2);
+      const pos = randomPositionNear(mx,my, 280);
+      moveNoButtonTo(pos.left, pos.top);
+    });
+
+    // On click, it escapes dramatically
+    noBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      attempts++;
+      randomCheesyLine();
+      showNextMeme();
+      attemptsText.style.display = 'block';
+      attemptsText.textContent = `Attempts: ${attempts} — you're persistent! But YES is still the plan.`;
+      const pos = randomPositionNear(e.clientX || 100, e.clientY || 100, 420);
+      moveNoButtonTo(pos.left, pos.top);
+    });
+
+    // keyboard support: on focus + space/enter, do same (so it's accessible but still playful)
+    noBtn.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        attempts++;
+        randomCheesyLine();
+        showNextMeme();
+        attemptsText.style.display = 'block';
+        attemptsText.textContent = `Attempts: ${attempts} — keyboard clicks too!`;
+        const pos = randomPositionNear(window.innerWidth/2, window.innerHeight/2, 360);
+        moveNoButtonTo(pos.left, pos.top);
+      }
+    });
+
+    // -----------------------
+    // YES button & celebration
+    // -----------------------
+    const overlay = document.getElementById('overlay');
+    const closeCelebrate = document.getElementById('closeCelebrate');
+
+    function showCelebration(){
+      overlay.classList.add('show');
+      overlay.setAttribute('aria-hidden','false');
+      // confetti burst
+      burstConfetti(120);
+    }
+
+    yesBtn.addEventListener('click', ()=>{
+      showCelebration();
+    });
+    yesBtn.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        showCelebration();
+      }
+    });
+
+    closeCelebrate.addEventListener('click', ()=>{
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+    });
+
+    // click outside to close overlay
+    overlay.addEventListener('click', (ev)=>{
+      if(ev.target === overlay) {
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden','true');
+      }
+    });
+
+    // -----------------------
+    // Simple confetti (vanilla)
+    // -----------------------
+    function createParticle(x,y,color,delay,rotate){
+      const el = document.createElement('div');
+      el.style.position = 'fixed';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.width = (6 + Math.random()*8) + 'px';
+      el.style.height = (6 + Math.random()*8) + 'px';
+      el.style.background = color;
+      el.style.opacity = 1;
+      el.style.borderRadius = Math.random() > 0.6 ? '50%' : '2px';
+      el.style.transform = `translateY(0) rotate(${rotate}deg)`;
+      el.style.zIndex = 2000;
+      document.body.appendChild(el);
+
+      const endY = window.innerHeight + 80;
+      const endX = x + (Math.random()*600-300);
+      const duration = 1800 + Math.random()*1400;
+
+      el.animate([
+        { transform: `translateY(0) rotate(${rotate}deg)`, opacity: 1 },
+        { transform: `translate(${endX-x}px, ${endY-y}px) rotate(${rotate + (Math.random()*720-360)}deg)`, opacity: 0 }
+      ], { duration, easing: 'cubic-bezier(0.22, 0.9, 0.3, 1)', delay });
+
+      setTimeout(()=> el.remove(), duration + Math.max(0,delay));
+    }
+
+    function burstConfetti(count = 80){
+      const colors = ['#ff2d95','#ff7ab6','#ffd1e6','#ffc3a0','#ffb7de','#fff2f8'];
+      const rect = yesBtn.getBoundingClientRect();
+      const centerX = rect.left + rect.width/2;
+      const centerY = rect.top + rect.height/2;
+      for(let i=0;i<count;i++){
+        const color = colors[Math.floor(Math.random()*colors.length)];
+        createParticle(centerX + (Math.random()*80-40), centerY + (Math.random()*80-40), color, Math.random()*120, Math.random()*360);
+      }
+    }
+
+    // -----------------------
+    // Animated floating hearts canvas
+    // -----------------------
+    const canvas = document.getElementById('hearts');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = innerWidth;
+    let H = canvas.height = innerHeight;
+    window.addEventListener('resize', ()=>{
+      W = canvas.width = innerWidth;
+      H = canvas.height = innerHeight;
+    });
+
+    function Heart(x, y, size, speedX, speedY, hue, opacity, rot){
+      this.x = x; this.y = y; this.s = size;
+      this.vx = speedX; this.vy = speedY;
+      this.h = hue; this.o = opacity; this.r = rot;
+    }
+    Heart.prototype.draw = function(){
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.r);
+      ctx.beginPath();
+      // draw a simple heart path
+      const s = this.s;
+      ctx.moveTo(0, -s/2);
+      ctx.bezierCurveTo(s/2, -s/2 - s/3, s*1.2, -s/6, 0, s*0.9);
+      ctx.bezierCurveTo(-s*1.2, -s/6, -s/2, -s/2 - s/3, 0, -s/2);
+      ctx.closePath();
+      ctx.fillStyle = `hsla(${this.h},85%,60%,${this.o})`;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    const hearts = [];
+    function spawnHeart(){
+      const size = 10 + Math.random()*36;
+      const x = Math.random()*W;
+      const y = H + 30;
+      const vx = (Math.random()-0.5)*0.6;
+      const vy = - (30 + Math.random()*36)/25; // upward
+      const hue = 330 + Math.random()*30;
+      const o = 0.35 + Math.random()*0.6;
+      const rot = (Math.random()-0.5)*0.8;
+      hearts.push(new Heart(x,y,size,vx,vy,hue,o,rot));
+    }
+
+    // populate
+    for(let i=0;i<18;i++) spawnHeart();
+
+    function animate(){
+      ctx.clearRect(0,0,W,H);
+      if(Math.random() < 0.08) spawnHeart();
+      for(let i=hearts.length-1;i>=0;i--){
+        const h = hearts[i];
+        h.x += h.vx;
+        h.y += h.vy;
+        h.r += 0.01 * (Math.random()>0.5?1:-1);
+        h.vy -= 0.001 * Math.random();
+        h.o -= 0.0006;
+        h.draw();
+        if(h.y < -80 || h.o <= 0.02) hearts.splice(i,1);
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // -----------------------
+    // Page load initial rotation
+    // -----------------------
+    window.addEventListener('load', ()=>{
+      // randomize initial lines
+      randomCheesyLine();
+      showNextMeme();
+    });
+
+    // Optionally: reposition NO button to a sane place on first load
+    (function positionNoInitial(){
+      const rect = noBtn.getBoundingClientRect();
+      if(rect.left < 10 || rect.top < 10){
+        // place near right of the card
+        const x = Math.min(window.innerWidth - 140, (window.innerWidth * 0.7));
+        const y = Math.max(80, window.innerHeight/2 - 20);
+        moveNoButtonTo(x,y);
+      }
+    })();
+
+  </script>
 </body>
 </html>
