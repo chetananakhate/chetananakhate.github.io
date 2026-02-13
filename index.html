@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lantern Festival Date Proposal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --gold: #ffd98a;
+      --pink: #ff6fb1;
+      --orange: #ff9a4d;
+
+      --bg-url: url("https://allenjoystudio.com/cdn/shop/files/Floating_Lanterns_Castle_Photography_Backdrop_GB_00911_grande.jpg?v=1723254354");
+      --lantern-symbol: url("https://diypixiedust.com/wp-content/uploads/2020/02/tangled_lantern_tangledboats_border_round_gold.png");
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      overflow:hidden;
+      color:#fff;
+      font-family:"Montserrat",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:#040512;
+    }
+
+    .scene{
+      position:relative;
+      width:100%;
+      height:100%;
+      background-image: var(--bg-url);
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05) contrast(1.05);
+    }
+    .scene::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(1200px 700px at 50% 55%, rgba(255,180,120,0.10), transparent 70%),
+        radial-gradient(900px 550px at 65% 40%, rgba(255,110,170,0.08), transparent 70%),
+        linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.55));
+      pointer-events:none;
+    }
+    .scene::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(120% 120% at 50% 50%, transparent 45%, rgba(0,0,0,0.70) 100%);
+      pointer-events:none;
+      mix-blend-mode:multiply;
+    }
+
+    .stars{
+      position:absolute; inset:0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(1.2px 1.2px at 60% 25%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,0.5), transparent 60%),
+        radial-gradient(1.1px 1.1px at 88% 30%, rgba(255,255,255,0.6), transparent 60%),
+        radial-gradient(1px 1px at 12% 55%, rgba(255,255,255,0.45), transparent 60%),
+        radial-gradient(1.2px 1.2px at 42% 62%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(1px 1px at 72% 58%, rgba(255,255,255,0.45), transparent 60%);
+      opacity:0.55;
+      filter: blur(0.2px);
+    }
+
+    .lantern-layer{
+      position:absolute; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    /* --- Lantern (CodePen-style) --- */
+    .lantern{
+      position:absolute;
+      left:50%;
+      top:0; /* JS will randomize this */
+      transform: translateX(-50%);
+      opacity: var(--op, 0.6);
+      will-change: transform;
+    
+      width: var(--size, 56px);
+      height: calc(var(--size, 56px) * 1.55);
+    
+      filter:
+        drop-shadow(0 0 12px rgba(255, 210, 140, 0.45))
+        drop-shadow(0 0 22px rgba(255, 4520, 190, 0.20));
+    
+      animation:
+        floatUp var(--dur, 10s) linear var(--delay, 0s) infinite,
+        sway   var(--sway, 4.6s) ease-in-out var(--delay, 0s) infinite;
+    }
+    
+    /* Small vertical float so they stay scattered */
+    @keyframes floatUp{
+      from { transform: translateX(-50%) translateY(120px); }
+      to   { transform: translateX(-50%) translateY(-120px); }
+    }
+
+
+    .layer-back .lantern{
+      opacity: var(--op, 0.40);
+      filter: blur(0.35px) drop-shadow(0 0 9px rgba(255, 210, 140, 0.20)) drop-shadow(0 0 16px rgba(255, 120, 190, 0.12));
+    }
+    .layer-mid .lantern{
+      opacity: var(--op, 0.58);
+      filter: drop-shadow(0 0 10px rgba(255, 210, 140, 0.32)) drop-shadow(0 0 18px rgba(405, 1230, 190, 0.16));
+    }
+    .layer-front .lantern{
+      opacity: var(--op, 0.78);
+      filter: drop-shadow(0 0 14px rgba(255, 220, 160, 0.50)) drop-shadow(0 0 28px rgba(255, 120, 190, 0.22));
+    }
+
+    /* Float within the top 60%:
+       start a bit below that band, end near the top edge */
+    @keyframes floatUp{
+      from { transform: translateX(-50%) translateY(40vh); }  /* roughly around mid-screen */
+      to   { transform: translateX(-50%) translateY(-62vh); } /* up past top */
+    }
+    @keyframes sway{
+      0%,100% { transform: translateX(-50%) translateY(var(--y, 0px)) rotate(-2deg) translateX(-5px); }
+      50%     { transform: translateX(-50%) translateY(var(--y, 0px)) rotate( 2deg) translateX( 5px); }
+    }
+
+    @keyframes flicker {
+      0%   { background: linear-gradient(#e7984a, #fad14f); }
+      10%  { background: linear-gradient(#e9a25c, #fbd661); }
+      45%  { background: linear-gradient(#e7984a, #fad14f); }
+      75%  { background: linear-gradient(#e9a25c, #fbd661); }
+      90%  { background: linear-gradient(#e7984a, #fad14f); }
+      100% { background: linear-gradient(#e9a25c, #fbd661); }
+    }
+    @keyframes flicker-2 {
+      0%   { background: #e7984a; }
+      10%  { background: #e9a25c; }
+      45%  { background: #e7984a; }
+      75%  { background: #e9a25c; }
+      90%  { background: #e7984a; }
+      100% { background: #e9a25c; }
+    }
+
+    .lantern::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius: calc(var(--size, 56px) * 0.16);
+      background: linear-gradient(#e7984a, #fad14f);
+      animation: flicker 750ms ease-in infinite alternate;
+      z-index: 8;
+      opacity: 0.92;
+    }
+
+    .lantern .body{
+      position: relative;
+      height: 100%;
+      width: 100%;
+      border-radius: calc(var(--size, 56px) * 0.16);
+      overflow: hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index: 10;
+    }
+    .lantern .body::before{
+      content:"";
+      position:absolute;
+      top: calc(var(--size, 56px) * -0.06);
+      left: 0;
+      width: 100%;
+      height: calc(var(--size, 56px) * 0.12);
+      background: #e7984a;
+      border-top-left-radius: 50%;
+      border-top-right-radius: 50%;
+      z-index: 9;
+      animation: flicker-2 750ms ease-in infinite alternate;
+      opacity: 0.95;
+    }
+    .lantern .body::after{
+      content:"";
+      position:absolute;
+      top: calc(var(--size, 56px) * 0.05);
+      left: 0;
+      right: 0;
+      bottom: calc(var(--size, 56px) * 0.14);
+      background-image: var(--lantern-symbol);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      border-radius: calc(var(--size, 56px) * 0.12);
+      z-index: 11;
+      opacity: 0.92;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 7px rgba(255, 210, 140, 0.14));
+      pointer-events:none;
+    }
+    .lantern .bottom{
+      position:absolute;
+      bottom: calc(var(--size, 56px) * -0.06);
+      left: 0;
+      width: 100%;
+      height: calc(var(--size, 56px) * 0.12);
+      background: #f0ac4a;
+      border-radius: 50%;
+      z-index: 12;
+      opacity: 0.95;
+      filter: drop-shadow(0 0 7px rgba(255, 210, 140, 0.20));
+    }
+
+    /* UI */
+    .ui{
+      position:absolute; inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .card{
+      width:min(560px, 92vw);
+      text-align:center;
+      padding: clamp(18px, 4vw, 34px);
+      border-radius: 26px;
+      background: rgba(10, 8, 26, 0.55);
+      border: 1px solid rgba(255, 220, 170, 0.18);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+    }
+
+    h1{
+      margin: 0 0 12px;
+      font-family: "Dancing Script", cursive;
+      font-size: clamp(40px, 6vw, 64px);
+      letter-spacing: 0.5px;
+      color: #ffe7b3;
+      text-shadow: 0 0 14px rgba(255, 210, 140, 0.55), 0 0 28px rgba(255, 110, 170, 0.28);
+    }
+
+    .sub{
+      margin: 0 auto 22px;
+      font-size: clamp(14px, 2.8vw, 16px);
+      line-height: 1.55;
+      max-width: 44ch;
+      color: rgba(255,255,255,0.90);
+      text-shadow: 0 0 10px rgba(255, 210, 140, 0.18);
+    }
+
+    .btn-row{
+      position: relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 14px;
+      margin-top: 16px;
+      min-height: 74px;
+    }
+
+    button{
+      font-family:"Montserrat",sans-serif;
+      border:0;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-yes{
+      padding: 14px 22px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 999px;
+      color: #1b0a12;
+      background: linear-gradient(135deg, var(--pink), var(--orange));
+      box-shadow:
+        0 10px 24px rgba(255, 110, 170, 0.25),
+        0 10px 28px rgba(255, 154, 77, 0.18),
+        0 0 18px rgba(255, 230, 180, 0.28);
+      transform: translateZ(0);
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .btn-yes:hover{ transform: translateY(-1px) scale(1.02); filter: brightness(1.05); }
+    .btn-yes:active{ transform: translateY(0px) scale(0.99); }
+
+    .btn-no{
+      position: fixed;
+      z-index: 30;
+      padding: 12px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 999px;
+      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255, 220, 170, 0.25);
+      box-shadow: 0 0 18px rgba(255, 210, 140, 0.10);
+      backdrop-filter: blur(6px);
+      transition: transform .08s ease;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .btn-no:hover{ transform: translate(-50%, -50%) scale(1.02); }
+
+    .success{ display:none; text-align:center; }
+
+    .success h2{
+      margin: 0 0 10px;
+      font-family:"Dancing Script",cursive;
+      font-size: clamp(44px, 6.3vw, 72px);
+      color:#ffe7b3;
+      text-shadow: 0 0 14px rgba(255, 210, 140, 0.60), 0 0 30px rgba(255, 110, 170, 0.30);
+    }
+    .success p{
+      margin: 0;
+      font-size: clamp(14px, 2.8vw, 16px);
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 0 10px rgba(255, 210, 140, 0.18);
+    }
+
+    .hint{ margin-top: 14px; font-size: 12px; color: rgba(255,255,255,0.55); }
+
+    @media (prefers-reduced-motion: reduce){
+      .lantern{ animation: none !important; }
+      .lantern::before,
+      .lantern .body::before{ animation: none !important; }
+      .btn-yes{ transition:none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scene" id="scene">
+    <div class="stars"></div>
+
+    <div class="lantern-layer layer-back" id="layerBack"></div>
+    <div class="lantern-layer layer-mid" id="layerMid"></div>
+    <div class="lantern-layer layer-front" id="layerFront"></div>
+
+    <div class="ui">
+      <div class="card" id="card">
+        <div class="proposal" id="proposal">
+          <h1>Will you be my date?</h1>
+          <p class="sub">I was hoping we could share a little lantern-festival kind of magic together â¨</p>
+
+          <div class="btn-row" id="btnRow">
+            <button class="btn-yes" id="yesBtn" type="button">Yes ð</button>
+            <button class="btn-no" id="noBtn" type="button">No</button>
+          </div>
+
+          <div class="hint">Psstâ¦ try to click "No" ð</div>
+        </div>
+
+        <div class="success" id="success">
+          <h2>Yay! It's a date!</h2>
+          <p>Can't wait ð®â¨</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const layerBack  = document.getElementById('layerBack');
+    const layerMid   = document.getElementById('layerMid');
+    const layerFront = document.getElementById('layerFront');
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+    function lanternHTML() {
+      return `<div class="body"><div class="img"></div></div><div class="bottom"></div>`;
+    }
+    
+    function createLantern({ layerEl, sizePx, duration, delay, opacity, blur = 0 }) {
+      const el = document.createElement('div');
+      el.className = 'lantern';
+    
+      el.style.setProperty('--size', `${sizePx}px`);
+      el.style.setProperty('--dur', `${duration}s`);
+      el.style.setProperty('--delay', `${delay}s`);
+      el.style.setProperty('--op', opacity.toFixed(2));
+      el.style.setProperty('--sway', `${rand(3.6, 6.2).toFixed(2)}s`);
+    
+      // ð THIS IS THE IMPORTANT PART
+      el.style.left = `${rand(3, 97)}%`;
+      const isMobile = window.innerWidth < 520;
+      const topMax = isMobile ? 70 : 60;
+      el.style.top = `${rand(2, topMax)}%`;
+    
+      if (blur > 0) {
+        el.style.filter = `blur(${blur}px) drop-shadow(0 0 9px rgba(255, 210, 140, 0.20)) drop-shadow(0 0 16px rgba(255, 120, 190, 0.12))`;
+      }
+    
+      el.innerHTML = lanternHTML();
+      layerEl.appendChild(el);
+    }
+
+
+    function seedLanterns() {
+      layerBack.innerHTML = '';
+      layerMid.innerHTML = '';
+      layerFront.innerHTML = '';
+
+      const isMobile = window.innerWidth < 520;
+
+      /* Reduced counts + smaller sizes.
+         Goal: fill top ~60% without feeling crowded. */
+      const backCount  = isMobile ? 10 : 34;
+      const midCount   = isMobile ? 12 : 36;
+      const frontCount = isMobile ? 7  : 20;
+
+      // Back (small + subtle)
+      for (let i = 0; i < backCount; i++) {
+        createLantern({
+          layerEl: layerBack,
+          sizePx: rand(isMobile ? 16 : 8, isMobile ? 26 : 18),
+          duration: rand(9.5, 11.5),     // ~10s
+          delay: rand(0, 8),
+          opacity: rand(0.22, 0.42),
+          blur: 0.7
+        });
+      }
+
+      // Mid
+      for (let i = 0; i < midCount; i++) {
+        createLantern({
+          layerEl: layerMid,
+          sizePx: rand(isMobile ? 22 : 14, isMobile ? 34 : 28),
+          duration: rand(9.5, 12.0),
+          delay: rand(0, 8),
+          opacity: rand(0.32, 0.55),
+          blur: 0
+        });
+      }
+
+      // Front (still modest)
+      for (let i = 0; i < frontCount; i++) {
+        createLantern({
+          layerEl: layerFront,
+          sizePx: rand(isMobile ? 34 : 38, isMobile ? 48 : 56),
+          duration: rand(9.0, 11.0),
+          delay: rand(0, 7),
+          opacity: rand(0.42, 0.70),
+          blur: 0
+        });
+      }
+    }
+
+    // --- No button: runs around near center (never disappears) ---
+    const noBtn  = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+
+    function centerRegion() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const regionW = Math.min(w * (w < 520 ? 0.70 : 0.55), 620);
+      const regionH = Math.min(h * (h < 520 ? 0.38 : 0.34), 360);
+      const left = (w - regionW) / 2;
+      const top  = (h - regionH) / 2;
+      return { left, top, right: left + regionW, bottom: top + regionH };
+    }
+
+    function moveNoButtonCenterish() {
+      const r = centerRegion();
+      const rect = noBtn.getBoundingClientRect();
+
+      const pad = 10;
+      const maxX = r.right - rect.width - pad;
+      const maxY = r.bottom - rect.height - pad;
+      const minX = r.left + pad;
+      const minY = r.top + pad;
+
+      let x = rand(minX, Math.max(minX, maxX));
+      let y = rand(minY, Math.max(minY, maxY));
+
+      const yesRect = yesBtn.getBoundingClientRect();
+      const safe = window.innerWidth < 520 ? 90 : 120;
+
+      const overlapsYes =
+        x < (yesRect.left + yesRect.width + safe) &&
+        x + rect.width > (yesRect.left - safe) &&
+        y < (yesRect.top + yesRect.height + safe) &&
+        y + rect.height > (yesRect.top - safe);
+
+      if (overlapsYes) {
+        y = clamp(y - safe, minY, Math.max(minY, maxY));
+        x = clamp(x + safe * 0.35, minX, Math.max(minX, maxX));
+      }
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top  = `${y}px`;
+    }
+
+    noBtn.addEventListener('mouseenter', moveNoButtonCenterish);
+    noBtn.addEventListener('mousedown', (e) => { e.preventDefault(); moveNoButtonCenterish(); });
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNoButtonCenterish(); }, { passive: false });
+    noBtn.setAttribute('ontouchstart', '');
+
+    // --- Yes button success state + celebratory lantern burst ---
+
+    const proposal = document.getElementById('proposal');
+    const success  = document.getElementById('success');
+
+    function lanternBurst(count = 14) {
+      for (let i = 0; i < count; i++) {
+        const pick = Math.random();
+        const isMobile = window.innerWidth < 520;
+
+        let layerEl, size, dur, op, blur;
+        if (pick < 0.25) {
+          layerEl = layerBack; size = rand(isMobile ? 16 : 18, isMobile ? 26 : 28); dur = rand(9.5, 12); op = rand(0.20, 0.40); blur = 0.7;
+        } else if (pick < 0.7) {
+          layerEl = layerMid;  size = rand(isMobile ? 22 : 24, isMobile ? 36 : 40); dur = rand(9.5, 12); op = rand(0.30, 0.55); blur = 0;
+        } else {
+          layerEl = layerFront; size = rand(isMobile ? 36 : 40, isMobile ? 50 : 58); dur = rand(9.0, 11.5); op = rand(0.45, 0.72); blur = 0;
+        }
+
+        createLantern({
+          layerEl,
+          sizePx: size,
+          duration: dur,
+          delay: rand(0, 2),
+          opacity: op,
+          blur
+        });
+      }
+    }
+
+    yesBtn.addEventListener('click', () => {
+      proposal.style.display = 'none';
+      success.style.display = 'block';
+      lanternBurst(window.innerWidth < 520 ? 10 : 14);
+    });
+
+    // Init
+    seedLanterns();
+    moveNoButtonCenterish();
+
+    let resizeT;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(() => {
+        seedLanterns();
+        moveNoButtonCenterish();
+      }, 150);
+    });
+
+    if ('ontouchstart' in window) {
+      setTimeout(() => moveNoButtonCenterish(), 650);
+    }
+  </script>
+</body>
+</html>
